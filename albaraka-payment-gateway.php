@@ -158,10 +158,10 @@ function init_wc_gateway_albaraka_plugin() {
                     'title'       => __( 'Transaction Type Indicator', 'albaraka-payment-gateway' ),
                     'type'        => 'select',
                     'options'     => array(
-                        'S' => __( 'Sale (S)', 'albaraka-payment-gateway' ),
+                        'SS' => __( 'Sale (SS)', 'albaraka-payment-gateway' ),
                         'A' => __( 'Authorization (A)', 'albaraka-payment-gateway' ),
                     ),
-                    'default'     => 'S',
+                    'default'     => 'SS',
                     'description' => __( 'Select the transaction type. Default is Sale.', 'albaraka-payment-gateway' ),
                     'desc_tip'    => true,
                 ),
