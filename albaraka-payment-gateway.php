@@ -296,7 +296,7 @@ function init_wc_gateway_albaraka_plugin() {
                 'cardHolderPhoneNumber'     => $order->get_billing_phone(),
                 'customerAddress'           => trim( $order->get_billing_address_1() . ' ' . $order->get_billing_address_2() ),
                 'customerCity'              => $order->get_billing_city(),
-                'customerCountry'           => $order->get_billing_country(),
+                'countryCode'           => $order->get_billing_country(),
                 'cardHolderIPAddress'       => WC_Geolocation::get_ip_address(),
                 'dateTimeBuyer'           => gmdate('YmdHis'), // Format: YYYYMMDDHHMMSS
                 'productDescription'        => $product_description,
