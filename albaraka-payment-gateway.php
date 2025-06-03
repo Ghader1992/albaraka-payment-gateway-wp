@@ -287,7 +287,7 @@ function init_wc_gateway_albaraka_plugin() {
                 'currency'                  => $this->currency,
                 'transactionTypeIndicator'  => $this->transactionTypeIndicator,
                 'redirectBackURL'           => $redirect_back_url,
-                'callbackURL'               => $this->callbackURL,
+                'callBackUrl'               => $this->callbackURL,
                 'language'                  => $this->language,
                 'transactionReference'      => $order->get_order_number(), // Or $order_id, depending on Al Baraka's requirement
                 'transactionAmount'         => $amount,
