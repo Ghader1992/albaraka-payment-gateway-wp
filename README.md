@@ -36,7 +36,7 @@ Key fields include:
 *   Merchant Kit ID
 *   Authentication Token
 *   Currency
-*   Transaction Type Indicator
+*   Transaction Type Indicator (default: `SS` for Sale & Settle)
 *   Redirect Back URL
 *   Callback URL
 *   Al Baraka Payment URL

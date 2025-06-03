@@ -61,7 +61,8 @@ function init_wc_gateway_albaraka_plugin() {
             $this->merchantKitId          = $this->get_option( 'merchantKitId' );
             $this->authenticationToken    = $this->get_option( 'authenticationToken' );
             $this->currency               = $this->get_option( 'currency', 'TRY' );
-            $this->transactionTypeIndicator = $this->get_option( 'transactionTypeIndicator', 'S' );
+            // Use "SS" as the default to match the form field default.
+            $this->transactionTypeIndicator = $this->get_option( 'transactionTypeIndicator', 'SS' );
             $this->redirectBackURL        = $this->get_option( 'redirectBackURL' );
             $this->callbackURL            = $this->get_option( 'callbackURL', WC()->api_request_url( 'wc_gateway_albaraka_callback' ) );
             $this->payment_url            = $this->get_option( 'payment_url' );
@@ -162,7 +163,8 @@ function init_wc_gateway_albaraka_plugin() {
                         'A' => __( 'Authorization (A)', 'albaraka-payment-gateway' ),
                     ),
                     'default'     => 'SS',
-                    'description' => __( 'Select the transaction type. Default is Sale.', 'albaraka-payment-gateway' ),
+                    // Use "Sale & Settle" as the default transaction type.
+                    'description' => __( 'Select the transaction type. Default is Sale & Settle.', 'albaraka-payment-gateway' ),
                     'desc_tip'    => true,
                 ),
                 'redirectBackURL' => array(
@@ -226,7 +228,8 @@ function init_wc_gateway_albaraka_plugin() {
             $this->merchantKitId            = $this->get_option( 'merchantKitId' );
             $this->authenticationToken      = $this->get_option( 'authenticationToken' );
             $this->currency                 = $this->get_option( 'currency', 'TRY' );
-            $this->transactionTypeIndicator = $this->get_option( 'transactionTypeIndicator', 'S' );
+            // Default to "SS" for Sale & Settle unless overridden in settings.
+            $this->transactionTypeIndicator = $this->get_option( 'transactionTypeIndicator', 'SS' );
             $this->redirectBackURL          = $this->get_option( 'redirectBackURL' );
             // Ensure callback URL is always correctly generated if empty or not yet saved.
             $this->callbackURL              = $this->get_option( 'callbackURL', WC()->api_request_url( 'wc_gateway_albaraka_callback' ) );
