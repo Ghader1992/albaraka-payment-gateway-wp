@@ -290,7 +290,7 @@ function init_wc_gateway_albaraka_plugin() {
                 'callbackURL'               => $this->callbackURL,
                 'language'                  => $this->language,
                 'transactionReference'      => $order->get_order_number(), // Or $order_id, depending on Al Baraka's requirement
-                'amount'                    => $amount,
+                'transactionAmount'         => $amount,
                 'customerEmail'             => $order->get_billing_email(),
                 'customerName'              => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
                 'customerPhone'             => $order->get_billing_phone(),
