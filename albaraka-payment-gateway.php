@@ -283,7 +283,7 @@ function init_wc_gateway_albaraka_plugin() {
                 'cardAcceptor'              => $this->cardAcceptor,
                 'mcc'                       => $this->mcc,
                 'merchantKitId'             => $this->merchantKitId,
-                // 'authenticationToken'    => $this->authenticationToken, // Token might be used server-to-server or specific ways, not always in form
+                'authenticationToken'    => $this->authenticationToken, // Token might be used server-to-server or specific ways, not always in form
                 'currency'                  => $this->currency,
                 'transactionTypeIndicator'  => $this->transactionTypeIndicator,
                 'redirectBackURL'           => $redirect_back_url,
@@ -291,14 +291,14 @@ function init_wc_gateway_albaraka_plugin() {
                 'language'                  => $this->language,
                 'transactionReference'      => $order->get_order_number(), // Or $order_id, depending on Al Baraka's requirement
                 'transactionAmount'         => $amount,
-                'customerEmail'             => $order->get_billing_email(),
+                'cardHolderMailAddress'     => $order->get_billing_email(),
                 'customerName'              => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
-                'customerPhone'             => $order->get_billing_phone(),
+                'cardHolderPhoneNumber'     => $order->get_billing_phone(),
                 'customerAddress'           => trim( $order->get_billing_address_1() . ' ' . $order->get_billing_address_2() ),
                 'customerCity'              => $order->get_billing_city(),
                 'customerCountry'           => $order->get_billing_country(),
-                'customerIp'                => WC_Geolocation::get_ip_address(),
-                'transactionTime'           => gmdate('YmdHis'), // Format: YYYYMMDDHHMMSS
+                'cardHolderIPAddress'       => WC_Geolocation::get_ip_address(),
+                'dateTimeBuyer'           => gmdate('YmdHis'), // Format: YYYYMMDDHHMMSS
                 'productDescription'        => $product_description,
                 // TODO: HASH CALCULATION - CRITICAL FOR SECURITY
                 // The following is a placeholder. The actual fields and hashing algorithm
