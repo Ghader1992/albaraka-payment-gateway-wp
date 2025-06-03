@@ -70,7 +70,7 @@ function init_wc_gateway_albaraka_plugin() {
 
             // Actions
             add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
-            add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page_handler' ) );
+            //add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page_handler' ) );
 
             // Callback for Al Baraka
             add_action( 'woocommerce_api_wc_gateway_albaraka_callback', array( $this, 'handle_albaraka_callback' ) );
@@ -245,37 +245,6 @@ function init_wc_gateway_albaraka_plugin() {
         public function process_payment( $order_id ) {
             $order = wc_get_order( $order_id );
 
-            if ( ! $order ) {
-                wc_add_notice( __( 'Order not found.', 'albaraka-payment-gateway' ), 'error' );
-                return array(
-                    'result'   => 'failure',
-                    'redirect' => wc_get_checkout_url(),
-                );
-            }
-
-            if ( empty( $this->payment_url ) ) {
-                wc_add_notice( __( 'Payment URL is not configured. Please contact the site administrator.', 'albaraka-payment-gateway' ), 'error' );
-                return array(
-                    'result'   => 'failure',
-                    'redirect' => wc_get_checkout_url(),
-                );
-            }
-
-            // Product description
-            $product_description_parts = array();
-            foreach ( $order->get_items() as $item ) {
-                $product_description_parts[] = $item->get_name() . ' x ' . $item->get_quantity();
-            }
-            $product_description = implode( '; ', $product_description_parts );
-            // Ensure description length is within Al Baraka limits if any (e.g., truncate)
-            // $product_description = substr($product_description, 0, 255); // Example truncation
-
-            // Amount: Format as required by Al Baraka (e.g., no thousand separator, specific decimal places)
-            // Assuming Al Baraka requires amount with two decimal places, without thousand separator.
-            $amount = number_format( $order->get_total(), 2, '.', '' );
-
-            // redirectBackURL: Use configured one, or default to order received page.
-            $redirect_back_url = ! empty( $this->redirectBackURL ) ? $this->redirectBackURL : $this->get_return_url( $order );
 
             $payment_args = array(
                 'pspId'                     => $this->pspId,
@@ -434,7 +403,7 @@ function init_wc_gateway_albaraka_plugin() {
          * We will use it to output and auto-submit the form to Al Baraka.
          * Note: $order_id is passed to this hook.
          */
-        public function thankyou_page_handler( $order_id ) {
+        /*public function thankyou_page_handler( $order_id ) {
             $form_html = get_transient( 'albaraka_form_for_order_' . $order_id );
             if ( $form_html ) {
                 // Clear the transient
@@ -450,7 +419,7 @@ function init_wc_gateway_albaraka_plugin() {
             }
             // Original thank you page content will follow unless exit() is called after echo.
         }
-
+*/
         /**
          * Handle the callback from Al Baraka.
          * This is where Al Baraka will send POST/JSON requests to update order status.
