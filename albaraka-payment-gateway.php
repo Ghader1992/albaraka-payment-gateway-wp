@@ -158,7 +158,7 @@ function init_wc_gateway_albaraka_plugin() {
                     'title'       => __( 'Transaction Type Indicator', 'albaraka-payment-gateway' ),
                     'type'        => 'select',
                     'options'     => array(
-                        'SS' => __( 'Sale (SS)', 'albaraka-payment-gateway' ),
+                        'SS' => __( 'Sale & Settle (SS)', 'albaraka-payment-gateway' ),
                         'A' => __( 'Authorization (A)', 'albaraka-payment-gateway' ),
                     ),
                     'default'     => 'SS',
