@@ -1,0 +1,12 @@
+# تجاهل ملفات Git وبيئات التطوير
+.DS_Store
+Thumbs.db
+.vscode/
+*.log
+
+# تجاهل ملفات Composer (لو استخدمت composer)
+/vendor/
+
+# تجاهل ملفات النظام والكاش
+/node_modules/
+*.cache
