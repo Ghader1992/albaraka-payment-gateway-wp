@@ -286,7 +286,7 @@ function init_wc_gateway_albaraka_plugin() {
                 'authenticationToken'    => $this->authenticationToken, // Token might be used server-to-server or specific ways, not always in form
                 'currency'                  => $this->currency,
                 'transactionTypeIndicator'  => $this->transactionTypeIndicator,
-                'redirectBackURL'           => $redirect_back_url,
+                'redirectBackUrl'           => $redirect_back_url,
                 'callBackUrl'               => $this->callbackURL,
                 'language'                  => $this->language,
                 'transactionReference'      => $order->get_order_number(), // Or $order_id, depending on Al Baraka's requirement
