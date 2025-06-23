@@ -60,19 +60,18 @@ function init_wc_gateway_albaraka_plugin() {
             $this->mcc                    = $this->get_option( 'mcc' );
             $this->merchantKitId          = $this->get_option( 'merchantKitId' );
             $this->authenticationToken    = $this->get_option( 'authenticationToken' );
-            $this->currency               = $this->get_option( 'currency', 'TRY' );
+            $this->currency               = $this->get_option( 'currency', 'SYP' );
+            $this->countryCode             = $this->get_option( 'countryCode', 'SYR' );
             $this->transactionTypeIndicator = $this->get_option( 'transactionTypeIndicator', 'SS' );
             $this->redirectBackURL        = $this->get_option( 'redirectBackURL' );
-            $this->callbackURL            = $this->get_option( 'callbackURL', WC()->api_request_url( 'wc_gateway_albaraka_callback' ) );
+            $this->callBackUrl            = $this->get_option( 'callBackUrl', WC()->api_request_url( 'wc_gateway_albaraka_callback' ) );
             $this->payment_url            = $this->get_option( 'payment_url' );
-            $this->language               = $this->get_option( 'language', 'TR' );
+            $this->language               = $this->get_option( 'language', 'en' );
 
 
             // Actions
             add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
-            //add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page_handler' ) );
-            //جديد تعديل
-            add_action( 'woocommerce_receipt_' . $this->id, array( $this, 'receipt_page' ) );
+            add_action( 'woocommerce_thankyou_' . $this->id, array( $this, 'thankyou_page_handler' ) ); 
             
             // Callback for Al Baraka
             add_action( 'woocommerce_api_wc_gateway_albaraka_callback', array( $this, 'handle_albaraka_callback' ) );
@@ -152,19 +151,19 @@ function init_wc_gateway_albaraka_plugin() {
                 'currency' => array(
                     'title'       => __( 'Currency Code', 'albaraka-payment-gateway' ),
                     'type'        => 'text',
-                    'description' => __( 'Currency code for transactions (e.g., TRY, USD). Default is TRY.', 'albaraka-payment-gateway' ),
-                    'default'     => 'TRY',
+                    'description' => __( 'Currency code for transactions (e.g., SYP, USD). Default is TRY.', 'albaraka-payment-gateway' ),
+                    'default'     => 'SYP',
                     'desc_tip'    => true,
                 ),
                 'transactionTypeIndicator' => array(
                     'title'       => __( 'Transaction Type Indicator', 'albaraka-payment-gateway' ),
                     'type'        => 'select',
                     'options'     => array(
-                        'S' => __( 'Sale (S)', 'albaraka-payment-gateway' ),
+                        'SS' => __( 'Sale (SS)', 'albaraka-payment-gateway' ),
                         'A' => __( 'Authorization (A)', 'albaraka-payment-gateway' ),
                     ),
-                    'default'     => 'S',
-                    'description' => __( 'Select the transaction type. Default is Sale & Settle.', 'albaraka-payment-gateway' ),
+                    'default'     => 'SS',
+                    'description' => __( 'Select the transaction type. Default is Sale.', 'albaraka-payment-gateway' ),
                     'desc_tip'    => true,
                 ),
                 'redirectBackURL' => array(
@@ -174,7 +173,7 @@ function init_wc_gateway_albaraka_plugin() {
                     'default'     => '', // Let merchant define this or use WC default.
                     'desc_tip'    => true,
                 ),
-                'callbackURL' => array(
+                'callBackUrl' => array(
                     'title'       => __( 'Callback URL', 'albaraka-payment-gateway' ),
                     'type'        => 'text',
                     'description' => __( 'URL for Al Baraka to send payment status updates. This is automatically generated. Provide this to Al Baraka.', 'albaraka-payment-gateway' ),
@@ -193,8 +192,8 @@ function init_wc_gateway_albaraka_plugin() {
                     'title'       => __( 'Language', 'albaraka-payment-gateway' ),
                     'type'        => 'select',
                     'options'     => array(
-                        'TR' => __( 'Turkish (TR)', 'albaraka-payment-gateway' ),
-                        'EN' => __( 'English (EN)', 'albaraka-payment-gateway' ),
+                        'ar' => __( 'Turkish (ar)', 'albaraka-payment-gateway' ),
+                        'en' => __( 'English (en)', 'albaraka-payment-gateway' ),
                     ),
                     'default'     => 'TR',
                     'description' => __( 'Language for the Al Baraka payment page. Default is Turkish.', 'albaraka-payment-gateway' ),
@@ -227,13 +226,13 @@ function init_wc_gateway_albaraka_plugin() {
             $this->mcc                      = $this->get_option( 'mcc' );
             $this->merchantKitId            = $this->get_option( 'merchantKitId' );
             $this->authenticationToken      = $this->get_option( 'authenticationToken' );
-            $this->currency                 = $this->get_option( 'currency', 'TRY' );
-            $this->transactionTypeIndicator = $this->get_option( 'transactionTypeIndicator', 'SS' );
+            $this->currency                 = $this->get_option( 'currency', 'SYP' );
+            $this->transactionTypeIndicator = $this->get_option( 'transactionTypeIndicator', 'S' );
             $this->redirectBackURL          = $this->get_option( 'redirectBackURL' );
             // Ensure callback URL is always correctly generated if empty or not yet saved.
-            $this->callbackURL              = $this->get_option( 'callbackURL', WC()->api_request_url( 'wc_gateway_albaraka_callback' ) );
+            $this->callBackUrl              = $this->get_option( 'callBackUrl', WC()->api_request_url( 'wc_gateway_albaraka_callback' ) );
             $this->payment_url              = $this->get_option( 'payment_url' );
-            $this->language                 = $this->get_option( 'language', 'TR' );
+            $this->language                 = $this->get_option( 'language', 'en' );
         }
 
 
@@ -244,6 +243,9 @@ function init_wc_gateway_albaraka_plugin() {
          * @param int $order_id
          * @return array
          */
+            public function receipt_page($order_id) {
+        echo "<p>متابعة الدفع عبر بنك البركة...</p>";
+    }
         public function process_payment( $order_id ) {
             $order = wc_get_order( $order_id );
 
@@ -280,29 +282,35 @@ function init_wc_gateway_albaraka_plugin() {
             $redirect_back_url = ! empty( $this->redirectBackURL ) ? $this->redirectBackURL : $this->get_return_url( $order );
 
             $payment_args = array(
-                'pspId' => $this->pspId,
-                'mpiId' => $this->mpiId,
-                'cardAcceptor' => $this->cardAcceptor,
-                'mcc' => $this->mcc,
-                'merchantKitId' => $this->merchantKitId,
-                'authenticationToken' => $this->authenticationToken,
-                'currency' => $this->currency,
-                'transactionTypeIndicator' => $this->transactionTypeIndicator,
-                'redirectBackUrl' => $redirect_back_url,
-                'callBackUrl' => $this->callbackURL,
-                'language' => $this->language,
-                'transactionReference' => $order->get_order_number(),
-                'transactionAmount' => $amount,
-                'cardHolderMailAddress' => $order->get_billing_email(),
-                'customerName' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
-                'cardHolderPhoneNumber' => $order->get_billing_phone(),
-                'customerAddress' => $order->get_billing_address_1() . ' ' . $order->get_billing_address_2(),
-                'customerCity' => $order->get_billing_city(),
-                'countryCode' => $order->get_billing_country(),
-                'cardHolderIPAddress' => WC_Geolocation::get_ip_address(),
-                'dateTimeBuyer' => gmdate('YmdHis'),
-                'productDescription' => $description,
-                'hash' => 'IMPLEMENT_HASH',
+                'pspId'                     => $this->pspId,
+                'mpiId'                     => $this->mpiId,
+                'cardAcceptor'              => $this->cardAcceptor,
+                'mcc'                       => $this->mcc,
+                'merchantKitId'             => $this->merchantKitId,
+                'authenticationToken'    => $this->authenticationToken, // Token might be used server-to-server or specific ways, not always in form
+                'currency'                  => $this->currency,
+                'transactionTypeIndicator'  => $this->transactionTypeIndicator,
+                'redirectBackUrl'           => $redirect_back_url,
+                'callBackUrl'               => $this->callBackUrl,
+                'language'                  => $this->language,
+                'transactionReference'                   => $order->get_order_number(), // Or $order_id, depending on Al Baraka's requirement
+                'transactionAmount'                    => $amount,
+                'cardHolderMailAddress'             => $order->get_billing_email(),
+                'customerName'              => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
+                'cardHolderPhoneNumber'             => $order->get_billing_phone(),
+                'customerAddress'           => trim( $order->get_billing_address_1() . ' ' . $order->get_billing_address_2() ),
+                'customerCity'              => $order->get_billing_city(),
+                'countryCode'           => $order->get_billing_country(),
+                'cardHolderIPAddress'                => WC_Geolocation::get_ip_address(),
+                'dateTimeBuyer'           => gmdate('YmdHis'), // Format: YYYYMMDDHHMMSS
+                'productDescription'        => $product_description,
+                // TODO: HASH CALCULATION - CRITICAL FOR SECURITY
+                // The following is a placeholder. The actual fields and hashing algorithm
+                // (e.g., SHA256, MD5) must be obtained from Al Baraka's documentation.
+                // Typically, you concatenate specific fields in a defined order with a secret key and then hash.
+                // Example: $hash_string = $this->pspId . $order_id . $amount . $this->currency . $secret_key;
+                //          $generated_hash = hash('sha256', $hash_string);
+                //'hash'                      => 'PLEASE_IMPLEMENT_REAL_HASH_CALCULATION', // Placeholder
             );
             
             // Some gateways require specific field names, e.g. some use 'clientid' instead of 'pspId'
@@ -412,7 +420,7 @@ function init_wc_gateway_albaraka_plugin() {
             // We store the form in session and print it on the thank you page.
 
             // Add a transient to signal the thankyou_page_handler to output the form
-            set_transient( 'albaraka_form_for_order_' . $order_id, $form_html, MINUTE_IN_SECONDS * 5 );
+            //set_transient( 'albaraka_form_for_order_' . $order_id, $form_html, MINUTE_IN_SECONDS * 5 );
 
 
             return array(
@@ -420,7 +428,7 @@ function init_wc_gateway_albaraka_plugin() {
                 // Redirect to the order-pay page. We'll hook into this page to output the form.
                 // Or, if Albaraka's redirectBackURL is reliable and they handle display, we might go there.
                 // For now, let's use the standard WooCommerce order received page.
-                'redirect' => $this->get_return_url( $order )
+                'redirect' => home_url('/albaraka-pay/' . $order_id . '/')
             );
         }
 
@@ -451,154 +459,101 @@ function init_wc_gateway_albaraka_plugin() {
          * Handle the callback from Al Baraka.
          * This is where Al Baraka will send POST/JSON requests to update order status.
          */
-        public function handle_albaraka_callback() {
-            $logger = wc_get_logger();
-            $raw_post_data = file_get_contents( 'php://input' );
+public function handle_albaraka_callback() {
+    $logger = wc_get_logger();
+    $raw_post_data = file_get_contents('php://input');
+    $logger->info('Al Baraka Callback Triggered. Raw Data: ' . $raw_post_data, array('source' => 'albaraka-payment-gateway'));
+    $logger->info('Al Baraka Callback POST Data: ' . print_r($_POST, true), array('source' => 'albaraka-payment-gateway'));
 
-            $logger->info( 'Al Baraka Callback Triggered. Raw Data: ' . $raw_post_data, array( 'source' => 'albaraka-payment-gateway' ) );
-            $logger->info( 'Al Baraka Callback POST Data: ' . print_r( $_POST, true ), array( 'source' => 'albaraka-payment-gateway' ) );
+    $data = array();
+    $order_id_key = 'idTransaction'; // أو 'orderId'
+    $transaction_stat_key = 'transactionStat';
+    $transaction_id_key = 'idTransaction';
 
-
-            $data = array();
-            $order_id_key = 'idTransaction'; // Default assumption, might be 'orderId' or other from POST
-            $transaction_stat_key = 'transactionStat';
-            $transaction_id_key = 'idTransaction'; // This might be a different Al Baraka specific transaction ID
-
-            if ( ! empty( $raw_post_data ) ) {
-                $json_data = json_decode( $raw_post_data, true );
-                if ( json_last_error() === JSON_ERROR_NONE && is_array( $json_data ) ) {
-                    $data = $json_data;
-                    $logger->info( 'Callback data parsed as JSON.', array( 'source' => 'albaraka-payment-gateway' ) );
-                    // If JSON, keys are likely fixed as per API spec, e.g. 'idTransaction', 'transactionStat'
-                    // The prompt specifically mentions 'idTransaction' and 'transactionStat' from JSON.
-                } else {
-                     $logger->warning( 'Callback data is not valid JSON or not an array. Last JSON error: ' . json_last_error_msg(), array( 'source' => 'albaraka-payment-gateway' ) );
-                    // Fallback to POST if JSON parsing failed or was empty but POST might exist
-                    if (!empty($_POST)) {
-                        $data = $_POST;
-                        $logger->info( 'Callback data parsed from POST.', array( 'source' => 'albaraka-payment-gateway' ) );
-                    } else {
-                        $logger->error( 'Callback data is empty or could not be parsed (JSON or POST).', array( 'source' => 'albaraka-payment-gateway' ) );
-                        echo 'Error: No data received or invalid format.';
-                        exit;
-                    }
-                }
-            } elseif (!empty($_POST)) {
-                 $data = $_POST;
-                 $logger->info( 'Callback data parsed from POST as raw_post_data was empty.', array( 'source' => 'albaraka-payment-gateway' ) );
-            } else {
-                $logger->error( 'Al Baraka Callback: No data received (empty JSON body and POST).', array( 'source' => 'albaraka-payment-gateway' ) );
-                echo 'Error: No data received.';
-                exit;
-            }
-            
-            // Sanitize data (example for top-level keys)
-            $data = array_map( 'sanitize_text_field', $data ); // Basic sanitization
-
-            $order_id_val = isset( $data[$order_id_key] ) ? $data[$order_id_key] : null;
-            // Sometimes the order ID might be in a different field in POST vs JSON, or under a generic name.
-            // For example, if your form sent 'orderId' as the WooCommerce order number.
-            if (empty($order_id_val) && isset($data['orderId'])) { // Check alternative common name
-                $order_id_val = $data['orderId'];
-            }
-            
-            $transaction_stat = isset( $data[$transaction_stat_key] ) ? $data[$transaction_stat_key] : null;
-            $transaction_id = isset( $data[$transaction_id_key] ) ? $data[$transaction_id_key] : null; // This might be Al Baraka's own transaction ref
-
-            if ( ! $order_id_val ) {
-                $logger->error( 'Al Baraka Callback: Order ID not found in callback data. Searched for key: ' . $order_id_key . ' and orderId.', array( 'source' => 'albaraka-payment-gateway' ) );
-                echo 'Error: Order ID missing.';
-                exit;
-            }
-
-            $order_id = absint( $order_id_val );
-            $order    = wc_get_order( $order_id );
-
-            if ( ! $order ) {
-                $logger->error( 'Al Baraka Callback: Order not found with ID: ' . $order_id, array( 'source' => 'albaraka-payment-gateway' ) );
-                // Use __() for user-facing error messages if this echo was ever shown, though 'OK' is typical for callbacks.
-                echo esc_html__( 'Error: Order not found.', 'albaraka-payment-gateway' );
-                exit;
-            }
-
-            // TODO: CRITICAL SECURITY CHECK - Implement Hash/Signature Verification
-            // This is a placeholder. You MUST verify the callback authenticity using the method
-            // specified by Al Baraka (e.g., comparing a received hash with a locally generated one
-            // using your secret key, or validating a token).
-            // Example:
-            // $secret_key = $this->authenticationToken; // Or another dedicated secret for callback
-            // $calculated_hash = generate_albaraka_callback_hash($data, $secret_key); // Implement this function
-            // $received_hash = isset($data['hash']) ? $data['hash'] : ''; // Or the relevant hash field from Al Baraka
-            // if ( !hash_equals($calculated_hash, $received_hash) ) {
-            //    $logger->error( 'Al Baraka Callback: Hash mismatch. Order ID: ' . $order_id, array( 'source' => 'albaraka-payment-gateway' ) );
-            //    echo esc_html__( 'Error: Security check failed.', 'albaraka-payment-gateway' );
-            //    exit;
-            // }
-            $logger->warning( 'Al Baraka Callback: SECURITY CHECK PLACEHOLDER - Implement hash/signature verification. Order ID: ' . $order_id, array( 'source' => 'albaraka-payment-gateway' ) );
-
-
-            if ( $order->is_paid() || $order->has_status( array( 'processing', 'completed' ) ) ) {
-                 $logger->info( 'Al Baraka Callback: Order ' . $order_id . ' already processed. Current status: ' . $order->get_status(), array( 'source' => 'albaraka-payment-gateway' ) );
-                 echo 'OK'; // Acknowledge, but don't reprocess
-                 exit;
-            }
-            
-            // Explicitly sanitize the specific data pieces being used in notes or comparisons.
-            $sanitized_transaction_id = sanitize_text_field( $transaction_id );
-            $sanitized_transaction_stat = sanitize_text_field( $transaction_stat );
-
-            // Process based on transactionStat - values 'S', 'F', 'C' are examples
-            // These need to be confirmed from Al Baraka documentation.
-            switch ( strtoupper( $sanitized_transaction_stat ) ) { // Using strtoupper for case-insensitivity
-                case 'S': // Assuming 'S' means Successful
-                case 'SUCCESS': // Common alternative
-                case 'APPROVED': // Common alternative
-                    $order->payment_complete( $sanitized_transaction_id ); // Pass Al Baraka's transaction ID if available and distinct
-                    $order->add_order_note(
-                        sprintf(
-                            __( 'Al Baraka payment successful.%1$sTransaction ID (Al Baraka): %2$s%1$sTransaction Status from Gateway: %3$s', 'albaraka-payment-gateway' ),
-                            "\n",
-                            $sanitized_transaction_id,
-                            $sanitized_transaction_stat
-                        )
-                    );
-                    // wc_reduce_stock_levels($order_id); // payment_complete() usually handles this.
-                    $logger->info( 'Al Baraka Callback: Payment completed for order ' . $order_id . '. Al Baraka Transaction ID: ' . $sanitized_transaction_id, array( 'source' => 'albaraka-payment-gateway' ) );
-                    break;
-                case 'F': // Assuming 'F' means Failed
-                case 'FAIL': // Common alternative
-                case 'FAILED':
-                case 'C': // Assuming 'C' means Cancelled
-                case 'CANCELLED':
-                case 'DECLINED':
-                    $order->update_status( 'failed', 
-                        sprintf(
-                            __( 'Al Baraka payment failed/cancelled.%1$sTransaction ID (Al Baraka): %2$s%1$sTransaction Status from Gateway: %3$s', 'albaraka-payment-gateway' ),
-                            "\n",
-                            $sanitized_transaction_id,
-                            $sanitized_transaction_stat
-                        )
-                    );
-                    $logger->info( 'Al Baraka Callback: Payment failed/cancelled for order ' . $order_id . '. Status: ' . $sanitized_transaction_stat . '. Al Baraka Transaction ID: ' . $sanitized_transaction_id, array( 'source' => 'albaraka-payment-gateway' ) );
-                    break;
-                default:
-                    $order->add_order_note(
-                        sprintf(
-                            __( 'Al Baraka payment returned with an unhandled status.%1$sTransaction ID (Al Baraka): %2$s%1$sTransaction Status from Gateway: %3$s', 'albaraka-payment-gateway' ),
-                            "\n",
-                            $sanitized_transaction_id,
-                            $sanitized_transaction_stat
-                        )
-                    );
-                    $logger->warning( 'Al Baraka Callback: Unhandled payment status for order ' . $order_id . '. Status: ' . $sanitized_transaction_stat . '. Al Baraka Transaction ID: ' . $sanitized_transaction_id, array( 'source' => 'albaraka-payment-gateway' ) );
-                    break;
-            }
-
-            echo 'OK'; // Acknowledge receipt to Al Baraka
+    // حاول نقرأ JSON من جسم الطلب
+    if (!empty($raw_post_data)) {
+        $json_data = json_decode($raw_post_data, true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($json_data)) {
+            $data = $json_data;
+            $logger->info('Callback data parsed as JSON.', array('source' => 'albaraka-payment-gateway'));
+        } elseif (!empty($_POST)) {
+            $data = $_POST;
+            $logger->info('Callback data parsed from POST.', array('source' => 'albaraka-payment-gateway'));
+        } else {
+            // خطأ: لا يوجد بيانات صالحة
+            header('Content-Type: application/json');
+            echo json_encode(['responseCode' => 'KO']);
             exit;
         }
+    } elseif (!empty($_POST)) {
+        $data = $_POST;
+        $logger->info('Callback data parsed from POST as raw_post_data was empty.', array('source' => 'albaraka-payment-gateway'));
+    } else {
+        // خطأ: لا يوجد بيانات
+        header('Content-Type: application/json');
+        echo json_encode(['responseCode' => 'KO']);
+        exit;
+    }
+
+    // تنظيف الداتا
+    $data = array_map('sanitize_text_field', $data);
+
+    $order_id_val = isset($data[$order_id_key]) ? $data[$order_id_key] : (isset($data['orderId']) ? $data['orderId'] : null);
+
+    if (!$order_id_val) {
+        // خطأ: رقم الطلب غير موجود
+        $logger->error('Order ID missing in callback.', array('source' => 'albaraka-payment-gateway'));
+        header('Content-Type: application/json');
+        echo json_encode(['responseCode' => 'KO']);
+        exit;
+    }
+
+    $order_id = absint($order_id_val);
+    $order = wc_get_order($order_id);
+
+    if (!$order) {
+        // خطأ: الطلب غير موجود
+        $logger->error('Order not found with ID: ' . $order_id, array('source' => 'albaraka-payment-gateway'));
+        header('Content-Type: application/json');
+        echo json_encode(['responseCode' => 'KO']);
+        exit;
+    }
+
+    // يمكن إضافة التحقق من التوقيع أو التوثيق هنا لاحقاً (SECURITY CHECK)
+
+    // في جميع الحالات، إذا وصلنا لهون: أرجع OK حتى لو العملية فشلت أو نجحت أو ملغية (المهم تم المعالجة)
+    $transaction_stat = isset($data[$transaction_stat_key]) ? $data[$transaction_stat_key] : null;
+    $transaction_id = isset($data[$transaction_id_key]) ? $data[$transaction_id_key] : null;
+
+    // معالجة حسب حالة العملية
+    switch (strtoupper($transaction_stat)) {
+        case 'S':
+        case 'SUCCESS':
+        case 'APPROVED':
+            $order->payment_complete($transaction_id);
+            $order->add_order_note('Al Baraka payment successful. Transaction ID: ' . $transaction_id);
+            break;
+        case 'F':
+        case 'FAIL':
+        case 'FAILED':
+        case 'C':
+        case 'CANCELLED':
+        case 'DECLINED':
+            $order->update_status('failed', 'Al Baraka payment failed/cancelled. Transaction ID: ' . $transaction_id);
+            break;
+        default:
+            $order->add_order_note('Al Baraka payment returned with unhandled status. Transaction ID: ' . $transaction_id . ' Status: ' . $transaction_stat);
+            break;
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode(['responseCode' => 'OK']);
+    exit;
+}
+
     }
 }
+
 
 /**
  * Add Al Baraka Gateway to WooCommerce list of payment gateways.
@@ -659,3 +614,77 @@ add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'albaraka_plug
 //    load_plugin_textdomain( 'albaraka-payment-gateway', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 // }
 // add_action( 'plugins_loaded', 'albaraka_load_my_plugin_textdomain' );
+
+// Register custom rewrite endpoint for payment redirection
+add_action('init', function () {
+    add_rewrite_rule('^albaraka-pay/([0-9]+)/?', 'index.php?albaraka_pay_order_id=$matches[1]', 'top');
+    add_rewrite_tag('%albaraka_pay_order_id%', '([0-9]+)');
+});
+
+add_action('template_redirect', function () {
+    $order_id = get_query_var('albaraka_pay_order_id');
+    if ($order_id) {
+        $order = wc_get_order($order_id);
+        if (!$order) {
+            wp_die('Order not found.');
+        }
+        // جلب معلومات الدفع
+        $gateway = null;
+        foreach (WC()->payment_gateways()->payment_gateways() as $gw) {
+            if ($gw->id === 'albaraka_payment') {
+                $gateway = $gw;
+                break;
+            }
+        }
+        if (!$gateway) {
+            wp_die('Gateway not found.');
+        }
+
+        // نسخ كامل من جزء إنشاء الفورم الموجود في process_payment
+        $product_description_parts = array();
+        foreach ($order->get_items() as $item) {
+            $product_description_parts[] = $item->get_name() . ' x ' . $item->get_quantity();
+        }
+        $product_description = implode('; ', $product_description_parts);
+        $amount = number_format($order->get_total(), 2, '.', '');
+        $redirect_back_url = !empty($gateway->redirectBackURL) ? $gateway->redirectBackURL : $gateway->get_return_url($order);
+
+        $payment_args = array(
+            'pspId' => $gateway->pspId,
+            'mpiId' => $gateway->mpiId,
+            'cardAcceptor' => $gateway->cardAcceptor,
+            'mcc' => $gateway->mcc,
+            'merchantKitId' => $gateway->merchantKitId,
+            'authenticationToken' => $gateway->authenticationToken,
+            'currency' => $gateway->currency,
+            'transactionTypeIndicator' => $gateway->transactionTypeIndicator,
+            'redirectBackUrl' => $redirect_back_url,
+            'callBackUrl' => $gateway->callBackUrl,
+            'language' => $gateway->language,
+            'transactionReference' => $order->get_order_number(),
+            'transactionAmount' => $amount,
+            'cardHolderMailAddress' => $order->get_billing_email(),
+            'customerName' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
+            'cardHolderPhoneNumber' => $order->get_billing_phone(),
+            'customerAddress' => trim($order->get_billing_address_1() . ' ' . $order->get_billing_address_2()),
+            'customerCity' => $order->get_billing_city(),
+            'countryCode' => $order->get_billing_country(),
+            'cardHolderIPAddress' => WC_Geolocation::get_ip_address(),
+            'dateTimeBuyer' => gmdate('YmdHis'),
+            'productDescription' => $product_description,
+            'hash' => 'PLEASE_IMPLEMENT_REAL_HASH_CALCULATION', // لازم تعدلها لاحقاً
+        );
+
+        echo '<form action="' . esc_url($gateway->payment_url) . '" method="post" id="albaraka_payment_form" target="_self">';
+        foreach ($payment_args as $key => $value) {
+            echo '<input type="hidden" name="' . esc_attr($key) . '" value="' . esc_attr($value) . '" />';
+        }
+        echo '<input type="submit" value="تابع الدفع عبر البركة" style="display:none;">';
+        echo '</form>';
+        echo '<script>document.getElementById("albaraka_payment_form").submit();</script>';
+        exit;
+    }
+});
+
+
+?>
