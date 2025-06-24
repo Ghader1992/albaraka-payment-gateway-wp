@@ -227,12 +227,12 @@ function init_wc_gateway_albaraka_plugin() {
             $this->merchantKitId            = $this->get_option( 'merchantKitId' );
             $this->authenticationToken      = $this->get_option( 'authenticationToken' );
             $this->currency                 = $this->get_option( 'currency', 'SYP' );
-            $this->transactionTypeIndicator = $this->get_option( 'transactionTypeIndicator', 'S' );
+            $this->transactionTypeIndicator = $this->get_option( 'transactionTypeIndicator', 'SS' );
             $this->redirectBackURL          = $this->get_option( 'redirectBackURL' );
             // Ensure callback URL is always correctly generated if empty or not yet saved.
             $this->callBackUrl              = $this->get_option( 'callBackUrl', WC()->api_request_url( 'wc_gateway_albaraka_callback' ) );
             $this->payment_url              = $this->get_option( 'payment_url' );
-            $this->language                 = $this->get_option( 'language', 'en' );
+            $this->language                 = $this->get_option( 'language', 'ar' );
         }
 
 
