@@ -192,11 +192,11 @@ function init_wc_gateway_albaraka_plugin() {
                     'title'       => __( 'Language', 'albaraka-payment-gateway' ),
                     'type'        => 'select',
                     'options'     => array(
-                        'ar' => __( 'Turkish (ar)', 'albaraka-payment-gateway' ),
+                        'ar' => __( 'Arabic (ar)', 'albaraka-payment-gateway' ),
                         'en' => __( 'English (en)', 'albaraka-payment-gateway' ),
                     ),
-                    'default'     => 'TR',
-                    'description' => __( 'Language for the Al Baraka payment page. Default is Turkish.', 'albaraka-payment-gateway' ),
+                    'default'     => 'ar',
+                    'description' => __( 'Language for the Al Baraka payment page. Default is Arabic.', 'albaraka-payment-gateway' ),
                     'desc_tip'    => true,
                 ),
             );
